@@ -7,12 +7,13 @@ import {
 } from '../controllers/productController.js'
 
 import upload from '../middleware/multer.js'
+import adminAuth from '../middleware/adminAuth.js'
 
 const productRouter = express.Router()
 
 // Add product WITH images
 productRouter.post(
-  '/add',
+  '/add',adminAuth,
   upload.fields([
     { name: 'image1', maxCount: 1 },
     { name: 'image2', maxCount: 1 },
@@ -23,7 +24,7 @@ productRouter.post(
 )
 
 // Remove product (NO FILE UPLOAD)
-productRouter.post('/remove', removeProduct)
+productRouter.post('/remove',adminAuth, removeProduct)
 
 // Get single product (NO FILE UPLOAD)
 productRouter.post('/single', singleProduct)
