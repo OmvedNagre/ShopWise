@@ -248,12 +248,3 @@ VITE_BACKEND_URL=http://localhost:5000
 * Strengthening small clothing businesses by giving them digital reach
 
 ---
-
-If you want, I can also add:
-
-✅ Screenshots
-✅ Logo + banners
-✅ ER diagram
-✅ API documentation table
-✅ Installation GIF
-Just tell me!
