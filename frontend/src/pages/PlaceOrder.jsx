@@ -33,15 +33,15 @@ const PlaceOrder = () => {
             key: import.meta.env.VITE_RAZORPAY_KEY_ID,
             amount: order.amount,
             currency: order.currency,
-            name:'Order Payment',
-            description:'Order Payment',
+            name: 'Order Payment',
+            description: 'Order Payment',
             order_id: order.id,
             receipt: order.receipt,
             handler: async (response) => {
                 console.log(response)
                 try {
-                    
-                    const { data } = await axios.post(backendUrl + '/api/order/verifyRazorpay',response,{headers:{token}})
+
+                    const { data } = await axios.post(backendUrl + '/api/order/verifyRazorpay', response, { headers: { token } })
                     if (data.success) {
                         navigate('/orders')
                         setCartItems({})
@@ -65,8 +65,9 @@ const PlaceOrder = () => {
             for (const items in cartItems) {
                 for (const item in cartItems[items]) {
                     if (cartItems[items][item] > 0) {
-                        const itemInfo = structuredClone(products.find(product => product._id === items))
-                        if (itemInfo) {
+                        const product = products.find(product => product._id === items);
+                        if (product) {
+                            const itemInfo = structuredClone(product)
                             itemInfo.size = item
                             itemInfo.quantity = cartItems[items][item]
                             orderItems.push(itemInfo)
@@ -75,18 +76,23 @@ const PlaceOrder = () => {
                 }
             }
 
+            if (orderItems.length === 0) {
+                toast.error("No items in cart")
+                return
+            }
+
             let orderData = {
                 address: formData,
                 items: orderItems,
                 amount: getCartAmount() + delivery_fee
             }
-            
+
 
             switch (method) {
 
                 // API Calls for COD
                 case 'cod':
-                    const response = await axios.post(backendUrl + '/api/order/place',orderData,{headers:{token}})
+                    const response = await axios.post(backendUrl + '/api/order/place', orderData, { headers: { token } })
                     if (response.data.success) {
                         setCartItems({})
                         navigate('/orders')
@@ -96,9 +102,9 @@ const PlaceOrder = () => {
                     break;
 
                 case 'stripe':
-                    const responseStripe = await axios.post(backendUrl + '/api/order/stripe',orderData,{headers:{token}})
+                    const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
                     if (responseStripe.data.success) {
-                        const {session_url} = responseStripe.data
+                        const { session_url } = responseStripe.data
                         window.location.replace(session_url)
                     } else {
                         toast.error(responseStripe.data.message)
@@ -107,7 +113,7 @@ const PlaceOrder = () => {
 
                 case 'razorpay':
 
-                    const responseRazorpay = await axios.post(backendUrl + '/api/order/razorpay', orderData, {headers:{token}})
+                    const responseRazorpay = await axios.post(backendUrl + '/api/order/razorpay', orderData, { headers: { token } })
                     if (responseRazorpay.data.success) {
                         initPay(responseRazorpay.data.order)
                     }
