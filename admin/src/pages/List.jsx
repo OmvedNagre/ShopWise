@@ -7,6 +7,8 @@ const List = ({ token }) => {
 
   const [list, setList] = useState([])
 
+
+  // READ
   const fetchList = async () => {
     try {
 
@@ -24,6 +26,7 @@ const List = ({ token }) => {
     }
   }
 
+  // DELETE
   const removeProduct = async (id) => {
     try {
 
